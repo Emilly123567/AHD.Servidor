@@ -1,0 +1,28 @@
+# Blueprint do Render: cria o servidor do A Hero's Destiny.
+# Como usar: suba esta pasta para um repositório no GitHub e, no Render, clique em
+# New > Blueprint, escolha o repositório e confirme. O Render lê este arquivo e cria tudo.
+#
+# Plano grátis: funciona do jeito que está. O servidor dorme depois de 15 minutos sem
+# ninguém e, quando acorda, perde os arquivos — mas cada navegador guarda uma cópia
+# do save e manda de volta sozinho quando o jogador entra.
+#
+# Saves guardados para sempre no servidor (opcional, plano pago): troque "plan: free"
+# por "plan: starter" e tire o # das linhas marcadas com (disco).
+services:
+  - type: web
+    name: ahd-servidor
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # - key: DATA_DIR          # (disco)
+      #   value: /var/data       # (disco)
+    # disk:                      # (disco)
+    #   name: dados              # (disco)
+    #   mountPath: /var/data     # (disco)
+    #   sizeGB: 1                # (disco)
+    
