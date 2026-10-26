@@ -408,13 +408,44 @@ function logout(c, why) {
 /* ============================================================
    HTTP + WEBSOCKET
    ============================================================ */
-let page = null, pageGz = null;
+let page = null, pageGz = null, pageBuild = '';
+// O jogo fica solto ao lado do server.js (pelo celular não dá para criar pastas no GitHub), mas
+// public/index.html também vale. O nome pode mudar (ex.: "AHD (1).html", quando o celular baixa o
+// arquivo de novo): entre todos os .html, vale o de carimbo (ahd-build) mais novo.
+function headOf(f) {
+  const fd = fs.openSync(f, 'r');
+  try { const b = Buffer.alloc(4096); return b.toString('utf8', 0, fs.readSync(fd, b, 0, 4096, 0)); } finally { fs.closeSync(fd); }
+}
+function findPage() {
+  const pref = ['AHD.html', 'index.html', 'public/index.html', 'public/AHD.html'];
+  const list = [];
+  for (const d of [__dirname, PUBLIC_DIR]) {
+    let names = [];
+    try { names = fs.readdirSync(d); } catch (e) { continue; }
+    for (const n of names) {
+      if (!/\.html?$/i.test(n)) continue;
+      const f = path.join(d, n);
+      try {
+        const st = fs.statSync(f);
+        if (!st.isFile()) continue;
+        const m = /name="ahd-build" content="(\d+)"/.exec(headOf(f));
+        const rel = path.relative(__dirname, f).split(path.sep).join('/');
+        list.push({ f, rel, b: m ? m[1] : '', p: pref.indexOf(rel) < 0 ? 99 : pref.indexOf(rel), s: st.size });
+      } catch (e) { /* ignora */ }
+    }
+  }
+  list.sort((x, y) => (x.b === y.b ? 0 : x.b < y.b ? 1 : -1) || x.p - y.p || y.s - x.s);
+  return list[0] || null;
+}
 function loadPage() {
+  const g = findPage();
   try {
-    page = fs.readFileSync(path.join(PUBLIC_DIR, 'index.html'));
+    if (!g) throw new Error('sem jogo');
+    page = fs.readFileSync(g.f);
     pageGz = zlib.gzipSync(page, { level: 9 });
-    log('jogo carregado:', Math.round(page.length / 1024) + ' KB (' + Math.round(pageGz.length / 1024) + ' KB comprimido)');
-  } catch (e) { page = null; log('aviso: public/index.html não encontrado — o servidor funciona, mas não serve o jogo'); }
+    pageBuild = g.b;
+    log('jogo carregado (' + g.rel + (g.b ? ', versão ' + g.b : '') + '):', Math.round(page.length / 1024) + ' KB (' + Math.round(pageGz.length / 1024) + ' KB comprimido)');
+  } catch (e) { page = null; log('aviso: AHD.html não encontrado ao lado do server.js — o servidor funciona, mas não serve o jogo'); }
 }
 const server = http.createServer((req, res) => {
   const url = (req.url || '/').split('?')[0];
@@ -422,12 +453,12 @@ const server = http.createServer((req, res) => {
   if (url === '/status') {
     let authed = 0, online = 0; for (const c of clients.values()) { if (c.authed) authed++; if (c.online) online++; }
     res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' });
-    res.end(JSON.stringify({ ok: true, jogo: !!page, jogadores: authed, modoOnline: online, salas: rooms.size, armazenamento: store.kind, uptime: Math.round(process.uptime()) }));
+    res.end(JSON.stringify({ ok: true, jogo: page ? (pageBuild || true) : false, jogadores: authed, modoOnline: online, salas: rooms.size, armazenamento: store.kind, uptime: Math.round(process.uptime()) }));
     return;
   }
   if (url === '/favicon.ico') { res.writeHead(204); res.end(); return; }
   if (url === '/' || url === '/index.html' || url === '/AHD.html') {
-    if (!page) { res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }); res.end('Coloque o jogo (AHD.html) em public/index.html'); return; }
+    if (!page) { res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }); res.end('Coloque o jogo (AHD.html) no repositório, junto com o server.js'); return; }
     const gz = /\bgzip\b/.test(req.headers['accept-encoding'] || '');
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache', ...(gz ? { 'content-encoding': 'gzip' } : {}), vary: 'accept-encoding' });
     res.end(gz ? pageGz : page);
