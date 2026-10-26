@@ -1,0 +1,13 @@
+{
+  "name": "ahd-servidor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servidor online do A Hero's Destiny: chat global, alianças, saves separados por jogador e mundo compartilhado. Não precisa de dependências.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
