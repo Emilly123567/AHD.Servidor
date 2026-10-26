@@ -25,4 +25,3 @@ services:
     #   name: dados              # (disco)
     #   mountPath: /var/data     # (disco)
     #   sizeGB: 1                # (disco)
-    
