@@ -1,6 +1,6 @@
 {
   "name": "ahd-servidor",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "private": true,
   "description": "Servidor online do A Hero's Destiny: chat, alianças, saves separados por jogador, mundo compartilhado, Arena PVP, painel do Dev e salas SandBox. Não precisa de dependências.",
   "main": "server.js",
