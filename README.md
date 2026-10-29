@@ -52,9 +52,39 @@ Sem Blueprint também dá: **New → Web Service**, escolha o repositório, *Run
 ## Novidades da versão 6
 
 - **Arena PVP**: no lobby, o redemoinho vermelho ao lado da arena dos desafios leva à Arena PVP. Só vale no modo online. O dano é equilibrado pela força de cada um (ninguém derruba o outro com um golpe), e cair na arena não tem castigo — nem no Hardcore.
-- **Painel do Dev** (antigo painel ADM): Configurações → **🛠️ Painel do Dev**, senha **996908**. Conectado ao servidor, mostra todos os jogadores online (de todos os servidores) com vida, classe, zona, Yen e força, e deixa dar e tirar recursos, curar, matar, teleportar, trolar, mandar mensagem, controlar o herói, silenciar, expulsar e banir. O servidor confere a senha do lado dele.
+- **Painel do Dev** (antigo painel ADM): na tela de entrada ou em Configurações → **🛠️ Painel do Dev**, senha **996908**. Conectado ao servidor, mostra todos os jogadores online (de todos os servidores) com vida, classe, zona, Yen e força, e deixa dar e tirar recursos, curar, matar, teleportar, trolar, mandar mensagem, controlar o herói, silenciar, expulsar e banir. O servidor confere a senha do lado dele.
 - **Dificuldades**: cada mundo (Fácil, Médio, Difícil, Hardcore) tem as suas salas de mapa; o chat é o mesmo para todos. No Hardcore, quando o herói morre, a conta e o save somem também do servidor.
-- **Salas SandBox** (servidores personalizados): o servidor já sabe guardar salas com nome e senha, cada uma com contas, saves, chat e mundo próprios. A tela para criar e editar as salas chega na próxima atualização do jogo.
+- **Salas SandBox**: veja a seção abaixo.
+
+## Modo SandBox (servidor personalizado)
+
+Cada servidor do Render pode ter várias **salas SandBox**. Uma sala é um mundo só dela: contas, saves, chat, alianças e regras próprias. Só entra quem souber o **nome** e a **senha** da sala.
+
+**Criar uma sala**
+
+1. Na tela de entrada do jogo, toque em **🧪 Criar servidor personalizado**.
+2. Cole o link do seu servidor do Render (se você abriu o jogo pelo link do servidor, ele já vem preenchido).
+3. Escolha **Criar sala**, dê um nome e uma senha e toque em **🧪 SandBox**. Se o servidor estiver dormindo, o jogo espera ele acordar (até 1 minuto).
+4. Crie a sua conta dentro da sala: **a primeira conta criada por quem criou a sala vira o ADM da sala**.
+5. Para os amigos: mesmo link, **Entrar numa sala**, o mesmo nome e a mesma senha.
+
+**O painel do ADM da sala** (botão **🛠️ ADM** ao lado do nome da sala, no canto do jogo) — só o dono da sala abre:
+
+| Aba | O que dá para fazer |
+|---|---|
+| 🌍 Mundo | Dificuldade da sala (ou cada um escolhe), todos os números da dificuldade (vida e ataque dos inimigos, recompensas, XP, maestria, preços, recargas...), morte permanente, Forja, Saitama, Dark Spin, história original, PVP, Raid e Torre |
+| 👹 Zonas | Por zona (ou todas): vida, ataque, quantidade e nome dos monstros, corpo e cor; chefe normal, **sem chefe** ou **montado no Criador de Chefes** (nome, aparência, barras, atributos, habilidades, golpe supremo) e o prêmio extra dele |
+| ⭐ Classes | Classes novas (raridade, jeito de lutar, elemento, passiva, 4 habilidades, despertar, Spin ou **Forja** com receita), raridade das classes do jogo e classes fora do Spin |
+| 🎒 Itens | Materiais, artefatos e boosts novos (um boost pode valer para vários tipos ao mesmo tempo) |
+| 🛒 Loja | Melhorias da loja da sala (efeito, preço, moeda, nível máximo) e bônus para todos na sala |
+| 📜 Missões | Pessoas (aparência, falas, lugar, loja) e missões com passos (falar, derrotar, chefe da zona, chegar, achar itens, lutar com um chefe montado, treinar) e recompensas |
+| 🧱 Terreno | Desenhe no mapa: chão, caminho, água, abismo, paredes, objetos (até passagens secretas), baús (com prêmio, até escondidos), placas, portais (secretos também), ninhos de chefe e de monstros, fontes de cura, balcões da loja e a entrada do mapa |
+| 👥 Jogadores | Os jogadores da sala com vida e status: dar, tirar, curar, matar, teleportar, trolar, controlar, silenciar, expulsar e banir |
+| ⚙️ Sala | Nome, boas-vindas, presente para quem entra, senha da sala, modelos prontos e copiar/colar o código da sala |
+
+**💾 Salvar para todos** manda o mundo para todo mundo da sala na hora. O terreno salva sozinho enquanto você desenha.
+
+**No Render grátis:** quando o servidor reinicia, as salas somem. O jogo ajuda: em **↩️ Voltar para a sala** ele oferece criar a sala de novo com o mesmo nome e senha, o seu save volta do navegador e, ao entrar como ADM, ele oferece **restaurar** o mundo que você montou (o navegador guarda uma cópia). Para garantir, use **⚙️ Sala → Copiar código da sala** de vez em quando.
 
 ## Os saves
 
