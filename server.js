@@ -455,14 +455,14 @@ async function auth(c, msg) {
     if (old && old !== c) kick(old, 'Sua conta entrou em outro aparelho. Este aqui ficou desconectado do servidor.');
     acc.last = Date.now(); R.store.putAccount(acc).catch((e) => log('conta:', e.message));
     // SandBox: a primeira conta criada por quem criou a sala vira a dona (ADM da sala)
-    if (R.sb && c.sbCreator && created && !R.meta.owner) { R.meta.owner = lname; R.meta.ownerName = name; await R.store.putKV('meta', R.meta).catch(() => {}); }
-    c.sbAdm = !!(R.sb && R.meta && R.meta.owner === lname);
+    if (R.sb && c.sbCreator && created && !R.meta.owner) { R.meta.owner = lname; R.meta.ownerName = name; R.meta.ownerAuth = await hashKey(key); await R.store.putKV('meta', R.meta).catch(() => {}); }
+    c.sbAdm = !!(R.sb && R.meta && R.meta.owner === lname && (!R.meta.ownerAuth || await checkHash(R.meta.ownerAuth, key)));
     c.authed = true; c.name = acc.name; c.lname = lname; c.online = false; c.realm = R; R.byName.set(lname, c); R.idleSince = 0;
     c.aid = R.allyOf.get(lname) || null;
     const sv = created ? null : await R.store.getSave(lname);
     c.lastPlay = sv ? +sv.play || 0 : 0;
-    send(c, { t: 'auth_ok', name: acc.name, p: c.pid, created, save: sv ? { data: sv.data, play: sv.play, t: sv.t } : null, realm: R.id, adm: c.sbAdm ? 1 : 0 });
     if (R.sb && R.cfgTxt) sendRaw(c, '{"t":"sbcfg","cfg":' + R.cfgTxt + '}');
+    send(c, { t: 'auth_ok', name: acc.name, p: c.pid, created, save: sv ? { data: sv.data, play: sv.play, t: sv.t } : null, realm: R.id, adm: c.sbAdm ? 1 : 0 });
     send(c, { t: 'hist', l: R.chatHist });
     send(c, { t: 'ally', a: allyState(R, c.aid) });
     const inv = invitesOf(R, lname); if (inv.length) send(c, { t: 'ainv', l: inv });
@@ -583,7 +583,9 @@ async function sandboxMsg(c, msg) {
     if (!R) { noteFail(c.ip); return send(c, { t: 'sb_err', msg: 'Sala não encontrada. Confira o nome.' }); }
     if (!(await checkHash(R.meta, key))) { noteFail(c.ip); return send(c, { t: 'sb_err', msg: 'Senha da sala incorreta.' }); }
     c.realm = R; c.sbOk = true; c.sbCreator = !R.meta.owner;
-    return send(c, { t: 'sb_ok', room: R.meta.name, created: false, hasCfg: !!R.cfg, owner: R.meta.ownerName });
+    send(c, { t: 'sb_ok', room: R.meta.name, created: false, hasCfg: !!R.cfg, owner: R.meta.ownerName });
+    if (R.cfgTxt) sendRaw(c, '{"t":"sbcfg","cfg":' + R.cfgTxt + '}');
+    return;
   });
 }
 // ADM da sala: configuração do mundo e comandos sobre os jogadores da sala
@@ -596,9 +598,16 @@ async function admMsg(c, msg) {
     let cfg; try { cfg = JSON.parse(txt); } catch (e) { return send(c, { t: 'note', msg: 'Configuração inválida.' }); }
     if (!cfg || typeof cfg !== 'object' || Array.isArray(cfg)) return;
     R.cfg = cfg; R.cfgTxt = JSON.stringify(cfg);
-    await R.store.putKV('config', cfg).catch((e) => log('config:', e.message));
-    realmBroadcast(R, '{"t":"sbcfg","cfg":' + R.cfgTxt + '}');
-    return send(c, { t: 'note', msg: '✅ Mundo atualizado para todos da sala.' });
+    if (!R.cfgT) {
+      const wait = Math.max(0, 1500 - (Date.now() - (R.cfgAt || 0)));
+      R.cfgT = setTimeout(() => {
+        R.cfgT = null; R.cfgAt = Date.now();
+        realmBroadcast(R, '{"t":"sbcfg","cfg":' + R.cfgTxt + '}');
+        R.store.putKV('config', R.cfg).catch((e) => log('config:', e.message));
+      }, wait);
+    }
+    if (!msg.quiet) send(c, { t: 'note', msg: '✅ Mundo atualizado para todos da sala.' });
+    return;
   }
   if (msg.op === 'watch') { c.admWatch = !!msg.on; refreshWatch(R); if (c.admWatch) send(c, { t: 'adm_list', l: devList(R) }); return; }
   if (msg.op === 'list') return send(c, { t: 'adm_list', l: devList(R) });
@@ -773,7 +782,7 @@ function shutdown() {
   log('desligando...');
   const done = () => process.exit(0);
   const jobs = [];
-  for (const R of realms.values()) jobs.push(R.store.putKV('aliancas', [...R.alliances.values()]).catch(() => {}), R.store.putKV('chat', R.chatHist).catch(() => {}), R.store.putKV('bans', R.bans).catch(() => {}));
+  for (const R of realms.values()) { jobs.push(R.store.putKV('aliancas', [...R.alliances.values()]).catch(() => {}), R.store.putKV('chat', R.chatHist).catch(() => {}), R.store.putKV('bans', R.bans).catch(() => {})); if (R.sb && R.cfg) jobs.push(R.store.putKV('config', R.cfg).catch(() => {})); }
   Promise.all(jobs).then(done, done);
   setTimeout(done, 3000);
 }
