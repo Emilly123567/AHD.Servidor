@@ -49,6 +49,13 @@ Sem Blueprint também dá: **New → Web Service**, escolha o repositório, *Run
 - Raid e Torre são compartilhadas (o chefe ganha mais vida com mais jogadores). Os Desafios são individuais.
 - Com menu ou conversa aberta, o mundo continua (os outros jogadores não param) — o seu herói só fica parado.
 
+## Novidades da versão 7.1
+
+- Invasão e chefe errante avisam com contagem antes de começar e nascem longe do herói.
+- Zona vencida: o chefe e os guardiões somem. No Portal das Zonas, ♻️ resetar (20 milhões de Yen na Zona 1, 10.000x mais a cada zona) traz os dois de volta, junto com os baús e os tesouros da masmorra.
+- Baús voltam 2 minutos depois de abertos. Difícil e Hardcore liberam todas as raridades de artefato. No Hardcore o nível 100 mil sai em uns 45 minutos.
+- Celular: interface menor (Configurações → tamanho Compacta, Média ou Grande) e joystick visível ou invisível.
+
 ## Novidades da versão 7
 
 - Zonas e lobby 7x maiores. Cada zona tem 3 guardiões e um chefe supremo (15 habilidades, 2 ataques supremos, 13 atributos).
