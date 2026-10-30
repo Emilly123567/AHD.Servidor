@@ -49,6 +49,12 @@ Sem Blueprint também dá: **New → Web Service**, escolha o repositório, *Run
 - Raid e Torre são compartilhadas (o chefe ganha mais vida com mais jogadores). Os Desafios são individuais.
 - Com menu ou conversa aberta, o mundo continua (os outros jogadores não param) — o seu herói só fica parado.
 
+## Novidades da versão 7
+
+- Zonas e lobby 7x maiores. Cada zona tem 3 guardiões e um chefe supremo (15 habilidades, 2 ataques supremos, 13 atributos).
+- Aparar (G / 🛡️) e combos, clima que muda a luta, eventos de zona, masmorras secretas, baús secretos (até 4 por mapa), coleta e culinária com a Tia Umeko.
+- As masmorras usam salas próprias (`d0`, `d1`...). O servidor não precisou de mudança: basta trocar o `AHD.html` e o `package.json`.
+
 ## Novidades da versão 6
 
 - **Arena PVP**: no lobby, o redemoinho vermelho ao lado da arena dos desafios leva à Arena PVP. Só vale no modo online. O dano é equilibrado pela força de cada um (ninguém derruba o outro com um golpe), e cair na arena não tem castigo — nem no Hardcore.
